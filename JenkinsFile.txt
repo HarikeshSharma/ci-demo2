@@ -1,0 +1,19 @@
+node {
+    def mvnHome
+    def javaHome
+    
+    stage('Preparation') {
+        git (url: 'https://github.com/HarikeshSharma/ci-demo2.git', credentialId: 'harikr')
+        mvnHome= tool 'Maven Path'
+        javaHome= tool 'Java Path'
+    }
+    
+    stage('Build') {
+        bat (/"${mvnHome}\bin\mvn" -f pom.xml clean package/)
+    }
+    
+    stage('Results') {
+        junit '**/target/surefire-reports/TEST-*.xml'
+        archive 'target/*.jar'
+    }
+}
